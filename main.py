@@ -1,17 +1,18 @@
 from bardapi import BardCookies
 import streamlit as st
 from streamlit_chat import message
+import subprocess
 
 cookie_dict = {
-    "__Secure-1PSID": "eQh86rYcmx8Cdk2YNJ9wXuCgx-_Js3lnVNPxPeYc2zUvBJ3JMUlSnJBc-fegKMmzikNTiA.",
-    "__Secure-1PSIDTS": "sidts-CjEBPVxjStaXzBL64xtD42vVclrYNoRHvb0MDQrmfOhCrC0c3gbUA-31a3NSoZ3Jcy7YEAA",
-    "__Secure-1PSIDCC": "ABTWhQECJNFiKGegwg4DnRNyp1dB439btWorEJZJTRNoM_7Y_2Yzp9LisYvq9uStglF2aWSyaMM"
+    "__Secure-1PSID": "eQh86q3rvMyjIOK70nwVhH8WT3m0vSjwrWEgIm3GR1_hGzh7W9zgPfL8a-Gxg_FgpE1lIw.",
+    "__Secure-1PSIDTS": "sidts-CjIBPVxjSgIS05B3BoxEO60ZMZ5gGfsQWAhizXS1GMflzI98KWD2Po07QoFAxlKBDE3__RAA",
+    "__Secure-1PSIDCC": "ABTWhQH0RDeJE9Cieafw5zfb6eGqAysAR0uWJQ9-Iz0FUY_4VW2nxrTy9YshenQJ2EJD9SQPWao7"
 }
 
 bard = BardCookies(cookie_dict=cookie_dict)
 
 
-st.title("CalculoIA tutor")
+st.title("Testing????????????????????????????")
 
 def response_api(promot, image=None):
     if image:
@@ -21,12 +22,20 @@ def response_api(promot, image=None):
     return bard_answer['content']
 
 def user_input():
-    input_text = st.text_input("Introduce lo que necesitas saber: ")
+    input_text = st.text_input("Prompt: ")
     return input_text
 
 def file_uploader(label):
     uploaded_file = st.file_uploader(label, type=['png', 'jpg', 'jpeg'])
     return uploaded_file
+
+def reconocer_voz():
+    texto = None
+    try:
+        texto = subprocess.check_output(['python', 'speech.py']).decode().strip()
+    except subprocess.CalledProcessError as e:
+        print("Error al intentar obtener la transcripción de audio:", e)
+    return texto
 
 if 'generate' not in st.session_state:
     st.session_state['generate'] = []
@@ -34,9 +43,20 @@ if 'past' not in st.session_state:
     st.session_state['past'] = []
 
 user_text = user_input()
-user_image = file_uploader("Carga una imagen (opcional):")
+user_image = file_uploader("Upload an image (optional):")
 
-if st.button("Enviar"):
+if st.button("Talk"):
+    audio_text = reconocer_voz()
+    if audio_text:
+        if user_image is not None:
+            output = response_api(audio_text, image=user_image.read())
+        else:
+            output = response_api(audio_text)
+        
+        st.session_state['generate'].append(output)
+        st.session_state['past'].append("Audio: " + audio_text)
+
+if st.button("Send"):
     if user_text:
         if user_image is not None:
             output = response_api(user_text, image=user_image.read())
