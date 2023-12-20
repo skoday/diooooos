@@ -4,9 +4,7 @@ from streamlit_chat import message
 import io
 
 cookie_dict = {
-    "__Secure-1PSID": "eQh86rYcmx8Cdk2YNJ9wXuCgx-_Js3lnVNPxPeYc2zUvBJ3JMUlSnJBc-fegKMmzikNTiA.",
-    "__Secure-1PSIDTS": "sidts-CjEBPVxjSpT1j-QWqfqvg0UKxyaEYz5zBunGyCmJNdduUntVjNPvoG3dKXRfTysKd69OEAA",
-    "__Secure-1PSIDCC": "ABTWhQHcAajGRHUOEOnLQA9Vq8x8HGBbBgewU6tWjUgMDtwYzArMqhs2TRD90q2giYuB9bvZ1vI"
+
 }
 
 bard = BardCookies(cookie_dict=cookie_dict)
